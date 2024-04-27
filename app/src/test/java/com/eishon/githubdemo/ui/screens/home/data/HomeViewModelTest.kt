@@ -1,18 +1,15 @@
 package com.eishon.githubdemo.ui.screens.home.data
 
-import com.eishon.githubdemo.CoreTest
 import com.eishon.githubdemo.data.model.ApiResult
 import com.eishon.githubdemo.data.model.Repo
 import com.eishon.githubdemo.data.repository.HomeRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner

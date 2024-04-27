@@ -2,6 +2,7 @@ package com.eishon.githubdemo.ui.screens.home.data
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,18 +10,19 @@ import com.eishon.githubdemo.data.model.ApiResult
 import com.eishon.githubdemo.data.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    @Named("io_dispatcher") private val dispatcher: CoroutineDispatcher,
+    @Named("main_dispatcher") private val dispatcher: CoroutineDispatcher,
     private val repository: HomeRepository
 ) : ViewModel() {
 
-    val uiState: MutableState<HomeUiState> = mutableStateOf(HomeUiState())
+    private val _uiState: MutableState<HomeUiState> = mutableStateOf(HomeUiState())
+    val uiState: State<HomeUiState> = _uiState
+
 
     init {
         getUserRepositories("eishon")
@@ -29,33 +31,23 @@ class HomeViewModel @Inject constructor(
     @VisibleForTesting
     fun getUserRepositories(userName: String) {
         viewModelScope.launch(dispatcher) {
-            updateUiState(HomeUiState(isLoading = true))
+            _uiState.value = HomeUiState(isLoading = true)
             when (val reposResult = repository.getRepositories(userName)) {
                 is ApiResult.Success -> {
-                    updateUiState(
-                        HomeUiState(
-                            isLoading = false,
-                            data = reposResult.data
-                        )
+                    _uiState.value = HomeUiState(
+                        isLoading = false,
+                        data = reposResult.data
                     )
                 }
 
                 is ApiResult.Failure -> {
-                    updateUiState(
-                        HomeUiState(
-                            isLoading = false,
-                            isError = true,
-                            errorMessage = reposResult.exception.message ?: "An error occurred"
-                        )
+                    _uiState.value = HomeUiState(
+                        isLoading = false,
+                        isError = true,
+                        errorMessage = reposResult.exception.message ?: "An error occurred"
                     )
                 }
             }
-        }
-    }
-
-    private fun updateUiState(state: HomeUiState) {
-        viewModelScope.launch(Dispatchers.Main) {
-            uiState.value = state
         }
     }
 }
