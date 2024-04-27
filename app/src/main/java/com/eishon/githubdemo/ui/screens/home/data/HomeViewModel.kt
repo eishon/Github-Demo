@@ -9,6 +9,7 @@ import com.eishon.githubdemo.data.model.ApiResult
 import com.eishon.githubdemo.data.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -28,24 +29,33 @@ class HomeViewModel @Inject constructor(
     @VisibleForTesting
     fun getUserRepositories(userName: String) {
         viewModelScope.launch(dispatcher) {
-            uiState.value = HomeUiState(isLoading = true)
+            updateUiState(HomeUiState(isLoading = true))
             when (val reposResult = repository.getRepositories(userName)) {
                 is ApiResult.Success -> {
-                    uiState.value = HomeUiState(
-                        isLoading = false,
-                        data = reposResult.data
+                    updateUiState(
+                        HomeUiState(
+                            isLoading = false,
+                            data = reposResult.data
+                        )
                     )
                 }
 
                 is ApiResult.Failure -> {
-                    uiState.value = HomeUiState(
-                        isLoading = false,
-                        isError = true,
-                        errorMessage = reposResult.exception.message ?: "An error occurred"
+                    updateUiState(
+                        HomeUiState(
+                            isLoading = false,
+                            isError = true,
+                            errorMessage = reposResult.exception.message ?: "An error occurred"
+                        )
                     )
                 }
             }
+        }
+    }
 
+    private fun updateUiState(state: HomeUiState) {
+        viewModelScope.launch(Dispatchers.Main) {
+            uiState.value = state
         }
     }
 }
