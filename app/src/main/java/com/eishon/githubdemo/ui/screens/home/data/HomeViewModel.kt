@@ -1,10 +1,10 @@
 package com.eishon.githubdemo.ui.screens.home.data
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eishon.githubdemo.data.model.ApiResult
 import com.eishon.githubdemo.data.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,14 +22,25 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getUserRepositories(userName: String) {
-         viewModelScope.launch {
-            try {
-                val repos = repository.getRepositories(userName)
-                uiState.value = HomeUiState(data = repos)
-            } catch (e: Exception) {
-                // handle error
-                Log.d("MainViewModel", "getUserRepositories: ${e.message}")
+        viewModelScope.launch {
+            uiState.value = HomeUiState(isLoading = true)
+            when (val reposResult = repository.getRepositories(userName)) {
+                is ApiResult.Success -> {
+                    uiState.value = HomeUiState(
+                        isLoading = false,
+                        data = reposResult.data
+                    )
+                }
+
+                is ApiResult.Failure -> {
+                    uiState.value = HomeUiState(
+                        isLoading = false,
+                        isError = true,
+                        errorMessage = reposResult.exception.message ?: "An error occurred"
+                    )
+                }
             }
-         }
+
+        }
     }
 }

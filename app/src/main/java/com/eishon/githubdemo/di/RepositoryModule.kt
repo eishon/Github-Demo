@@ -1,7 +1,7 @@
 package com.eishon.githubdemo.di
 
 import com.eishon.githubdemo.data.repository.HomeRepository
-import com.eishon.githubdemo.data.repository.Impl.HomeRepositoryImpl
+import com.eishon.githubdemo.data.repository.impl.HomeRepositoryImpl
 import com.eishon.githubdemo.data.api.GithubService
 import dagger.Module
 import dagger.Provides
