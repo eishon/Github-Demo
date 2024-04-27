@@ -1,5 +1,6 @@
 package com.eishon.githubdemo.ui.screens.home.data
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -7,11 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.eishon.githubdemo.data.model.ApiResult
 import com.eishon.githubdemo.data.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    @Named("io_dispatcher") private val dispatcher: CoroutineDispatcher,
     private val repository: HomeRepository
 ) : ViewModel() {
 
@@ -21,8 +25,9 @@ class HomeViewModel @Inject constructor(
         getUserRepositories("eishon")
     }
 
-    private fun getUserRepositories(userName: String) {
-        viewModelScope.launch {
+    @VisibleForTesting
+    fun getUserRepositories(userName: String) {
+        viewModelScope.launch(dispatcher) {
             uiState.value = HomeUiState(isLoading = true)
             when (val reposResult = repository.getRepositories(userName)) {
                 is ApiResult.Success -> {

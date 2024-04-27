@@ -1,10 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        android_plugin_version = '8.3.2'
-        kotlin_version = '1.5.31'
+        androidPluginVersion = '8.3.2'
+        kotlinVersion = '1.5.31'
         hiltVersion = '2.51.1'
         retrofitVersion = '2.9.0'
+
+        mockitoVersion = '4.1.0'
     }
 
     repositories {
@@ -12,8 +14,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$android_plugin_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
     }

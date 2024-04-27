@@ -4,5 +4,5 @@ import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class GithubDemoApp:Application() {
+open class GithubDemoApp:Application() {
 }
