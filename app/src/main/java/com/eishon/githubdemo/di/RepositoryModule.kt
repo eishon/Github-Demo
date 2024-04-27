@@ -1,12 +1,11 @@
 package com.eishon.githubdemo.di
 
-import com.eishon.githubdemo.ui.screens.MainRepository
-import com.eishon.githubdemo.ui.screens.MainRepositoryImpl
+import com.eishon.githubdemo.data.repository.HomeRepository
+import com.eishon.githubdemo.data.repository.Impl.HomeRepositoryImpl
 import com.eishon.githubdemo.data.api.GithubService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -16,6 +15,6 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideMainRepository(githubService: GithubService):MainRepository = MainRepositoryImpl(githubService)
+    fun provideMainRepository(githubService: GithubService): HomeRepository = HomeRepositoryImpl(githubService)
 
 }
